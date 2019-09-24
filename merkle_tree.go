@@ -36,6 +36,10 @@ func NewMerkleTree(data [][]byte) *MerkleTree {
 			node := NewMerkleNode(&nodes[j], &nodes[j+1], nil)
 			newLevel = append(newLevel, *node)
 		}
+		//如果叶子节点是奇数，拷贝一份最后一个节点,比如一个区块有5笔或者6笔交易，就会有三个叶子节点
+		//if len(newLevel)%2 != 0 {
+		//	newLevel=append(newLevel, newLevel[len(newLevel)-1])
+		//}
 
 		nodes = newLevel
 	}
