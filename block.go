@@ -9,12 +9,12 @@ import (
 
 // Block represents a block in the blockchain
 type Block struct {
-	Timestamp     int64
-	Transactions  []*Transaction
-	PrevBlockHash []byte
-	Hash          []byte
-	Nonce         int
-	Height        int
+	Timestamp     int64          //时间戳，也就是区块创建的时间
+	Transactions  []*Transaction //交易列表
+	PrevBlockHash []byte         //上一个区块的Hash值
+	Hash          []byte         //当前区块的Hash值
+	Nonce         int            //计数器，也就是pow做Hash的次数
+	Height        int            //当前区块的高度
 }
 
 // NewBlock creates and returns Block

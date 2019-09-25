@@ -12,27 +12,27 @@ import (
 
 const walletFile = "wallet_%s.dat"
 
-// Wallets stores a collection of wallets
+// WalletMap stores a collection of wallets
 type Wallets struct {
-	Wallets map[string]*Wallet
+	WalletMap map[string]*Wallet
 }
 
-// NewWallets creates Wallets and fills it from a file if it exists
+// NewWallets creates WalletMap and fills it from a file if it exists
 func NewWallets(nodeID string) (*Wallets, error) {
 	wallets := Wallets{}
-	wallets.Wallets = make(map[string]*Wallet)
+	wallets.WalletMap = make(map[string]*Wallet)
 
 	err := wallets.LoadFromFile(nodeID)
 
 	return &wallets, err
 }
 
-// CreateWallet adds a Wallet to Wallets
+// CreateWallet adds a Wallet to WalletMap
 func (ws *Wallets) CreateWallet() string {
 	wallet := NewWallet()
 	address := fmt.Sprintf("%s", wallet.GetAddress())
 
-	ws.Wallets[address] = wallet
+	ws.WalletMap[address] = wallet
 
 	return address
 }
@@ -41,7 +41,7 @@ func (ws *Wallets) CreateWallet() string {
 func (ws *Wallets) GetAddresses() []string {
 	var addresses []string
 
-	for address := range ws.Wallets {
+	for address := range ws.WalletMap {
 		addresses = append(addresses, address)
 	}
 
@@ -50,7 +50,7 @@ func (ws *Wallets) GetAddresses() []string {
 
 // GetWallet returns a Wallet by its address
 func (ws Wallets) GetWallet(address string) Wallet {
-	return *ws.Wallets[address]
+	return *ws.WalletMap[address]
 }
 
 // LoadFromFile loads wallets from the file
@@ -73,7 +73,7 @@ func (ws *Wallets) LoadFromFile(nodeID string) error {
 		log.Panic(err)
 	}
 
-	ws.Wallets = wallets.Wallets
+	ws.WalletMap = wallets.WalletMap
 
 	return nil
 }

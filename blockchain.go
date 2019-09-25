@@ -16,13 +16,14 @@ const dbFile = "blockchain_%s.db"
 const blocksBucket = "blocks"
 const genesisCoinbaseData = "The Times 03/Jan/2009 Chancellor on brink of second bailout for banks"
 
-// Blockchain implements interactions with a DB
 type Blockchain struct {
 	tip []byte
 	db  *bolt.DB
 }
 
-// CreateBlockchain creates a new blockchain DB
+// 创建新的Blockchain，返回BLockChain对象
+//address 创世区块coinbase奖励的接收地址
+//nodeID 节点标识符
 func CreateBlockchain(address, nodeID string) *Blockchain {
 	dbFile := fmt.Sprintf(dbFile, nodeID)
 	if dbExists(dbFile) {
@@ -32,8 +33,8 @@ func CreateBlockchain(address, nodeID string) *Blockchain {
 
 	var tip []byte
 
-	cbtx := NewCoinbaseTX(address, genesisCoinbaseData)
-	genesis := NewGenesisBlock(cbtx)
+	cbtx := NewCoinbaseTX(address, genesisCoinbaseData) //创建一个新的coinBase交易
+	genesis := NewGenesisBlock(cbtx)                    //创建创世区块
 
 	db, err := bolt.Open(dbFile, 0600, nil)
 	if err != nil {
@@ -41,17 +42,17 @@ func CreateBlockchain(address, nodeID string) *Blockchain {
 	}
 
 	err = db.Update(func(tx *bolt.Tx) error {
-		b, err := tx.CreateBucket([]byte(blocksBucket))
+		b, err := tx.CreateBucket([]byte(blocksBucket)) //创建block表
 		if err != nil {
 			log.Panic(err)
 		}
 
-		err = b.Put(genesis.Hash, genesis.Serialize())
+		err = b.Put(genesis.Hash, genesis.Serialize()) //保存创世区块到block表{Hash:block}
 		if err != nil {
 			log.Panic(err)
 		}
 
-		err = b.Put([]byte("l"), genesis.Hash)
+		err = b.Put([]byte("l"), genesis.Hash) //保存当前最新的Hash到block表{"l":Hash}
 		if err != nil {
 			log.Panic(err)
 		}
@@ -68,7 +69,7 @@ func CreateBlockchain(address, nodeID string) *Blockchain {
 	return &bc
 }
 
-// NewBlockchain creates a new Blockchain with genesis Block
+// 加载当前blockchain
 func NewBlockchain(nodeID string) *Blockchain {
 	dbFile := fmt.Sprintf(dbFile, nodeID)
 	if dbExists(dbFile) == false {
@@ -153,7 +154,7 @@ func (bc *Blockchain) FindTransaction(ID []byte) (Transaction, error) {
 	return Transaction{}, errors.New("Transaction is not found")
 }
 
-// FindUTXO finds all unspent transaction outputs and returns transactions with spent outputs removed
+// 查找所有未花费输出，返回值格式{txHash:TXOutputs}
 func (bc *Blockchain) FindUTXO() map[string]TXOutputs {
 	UTXO := make(map[string]TXOutputs)
 	spentTXOs := make(map[string][]int)
@@ -189,6 +190,7 @@ func (bc *Blockchain) FindUTXO() map[string]TXOutputs {
 			}
 		}
 
+		//当前区块为创世区块
 		if len(block.PrevBlockHash) == 0 {
 			break
 		}
@@ -247,7 +249,7 @@ func (bc *Blockchain) GetBlock(blockHash []byte) (Block, error) {
 	return block, nil
 }
 
-// GetBlockHashes returns a list of hashes of all the blocks in the chain
+// 返回当前区块链所有区块的Hash
 func (bc *Blockchain) GetBlockHashes() [][]byte {
 	var blocks [][]byte
 	bci := bc.Iterator()
@@ -271,7 +273,7 @@ func (bc *Blockchain) MineBlock(transactions []*Transaction) *Block {
 	var lastHeight int
 
 	for _, tx := range transactions {
-		// TODO: ignore transaction if it's not valid
+
 		if bc.VerifyTransaction(tx) != true {
 			log.Panic("ERROR: Invalid transaction")
 		}
@@ -351,6 +353,7 @@ func (bc *Blockchain) VerifyTransaction(tx *Transaction) bool {
 	return tx.Verify(prevTXs)
 }
 
+//判断数据库是否存在
 func dbExists(dbFile string) bool {
 	if _, err := os.Stat(dbFile); os.IsNotExist(err) {
 		return false
