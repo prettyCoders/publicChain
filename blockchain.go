@@ -12,7 +12,7 @@ import (
 	"github.com/boltdb/bolt"
 )
 
-const dbFile = "blockchain_%s.db"
+const dbFile = "blockchain.db"
 const blocksBucket = "blocks"
 const genesisCoinbaseData = "The Times 03/Jan/2009 Chancellor on brink of second bailout for banks"
 
@@ -22,10 +22,9 @@ type Blockchain struct {
 }
 
 // 创建新的Blockchain，返回BLockChain对象
-//address 创世区块coinbase奖励的接收地址
+//Address 创世区块coinbase奖励的接收地址
 //nodeID 节点标识符
-func CreateBlockchain(address, nodeID string) *Blockchain {
-	dbFile := fmt.Sprintf(dbFile, nodeID)
+func CreateBlockchain(address string) *Blockchain {
 	if dbExists(dbFile) {
 		fmt.Println("Blockchain already exists.")
 		os.Exit(1)
@@ -70,8 +69,7 @@ func CreateBlockchain(address, nodeID string) *Blockchain {
 }
 
 // 加载当前blockchain
-func NewBlockchain(nodeID string) *Blockchain {
-	dbFile := fmt.Sprintf(dbFile, nodeID)
+func NewBlockchain() *Blockchain {
 	if dbExists(dbFile) == false {
 		fmt.Println("No existing blockchain found. Create one first.")
 		os.Exit(1)
@@ -86,7 +84,6 @@ func NewBlockchain(nodeID string) *Blockchain {
 	err = db.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte(blocksBucket))
 		tip = b.Get([]byte("l"))
-
 		return nil
 	})
 	if err != nil {
@@ -94,7 +91,6 @@ func NewBlockchain(nodeID string) *Blockchain {
 	}
 
 	bc := Blockchain{tip, db}
-
 	return &bc
 }
 

@@ -10,7 +10,7 @@ type TXInput struct {
 	PubKey    []byte
 }
 
-// UsesKey checks whether the address initiated the transaction
+// UsesKey checks whether the Address initiated the transaction
 func (in *TXInput) UsesKey(pubKeyHash []byte) bool {
 	lockingHash := HashPubKey(in.PubKey)
 

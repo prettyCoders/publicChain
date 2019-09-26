@@ -2,13 +2,14 @@ package main
 
 import (
 	"fmt"
-	"log"
+	"os"
 )
 
-func (cli *CLI) listAddresses(nodeID string) {
-	wallets, err := NewWallets(nodeID)
+func (cli *CLI) listAddresses() {
+	wallets, err := NewWallets()
 	if err != nil {
-		log.Panic(err)
+		fmt.Println("There are not any wallet,Please create one first.")
+		os.Exit(1)
 	}
 	addresses := wallets.GetAddresses()
 
