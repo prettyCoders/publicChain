@@ -385,7 +385,7 @@ func handleBlock(request []byte, bc *Blockchain) {
 		UTXOSet := UTXOSet{bc}
 		UTXOSet.Reindex()
 	}
-	lock.Unlock()
+	defer lock.Unlock()
 }
 
 //发送交易数据
