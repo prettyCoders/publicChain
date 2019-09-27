@@ -352,6 +352,7 @@ func sendBlock(addr string, b *Block) {
 // 它将需要很多时间来对整个 UTXO 集重新索引
 func handleBlock(request []byte, bc *Blockchain) {
 	lock.Lock()
+	defer lock.Unlock()
 	var buff bytes.Buffer
 	var blockData BlockData
 
@@ -385,7 +386,6 @@ func handleBlock(request []byte, bc *Blockchain) {
 		UTXOSet := UTXOSet{bc}
 		UTXOSet.Reindex()
 	}
-	defer lock.Unlock()
 }
 
 //发送交易数据
