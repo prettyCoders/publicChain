@@ -84,7 +84,7 @@ func StartServer(minerAddress string) {
 
 	//发送节点信息到其他节点，以便加入网络
 	fmt.Printf("当前机器的内网IP为：%s\n", fmt.Sprintf("%s:%d", GetInternalIp(), listenPort))
-	for _, peer := range peers.peerList {
+	for _, peer := range peers.PeerList {
 		peerAddress := peer.Address
 		//自己的外网IP
 		if peerAddress == fmt.Sprintf("%s:%d", GetInternalIp(), listenPort) {
@@ -199,7 +199,7 @@ func handleNodeMessage(request []byte, bc *Blockchain) {
 		fmt.Printf("收到节点的NodeMessage请求，当前节点BestBlockHeight:%d，对方BestBlockHeight:%d\n", myBestHeight, foreignerBestHeight)
 		//新peer
 		if !peerNode.isOld() {
-			peers.peerList = append(peers.peerList, Peer{
+			peers.PeerList = append(peers.PeerList, Peer{
 				Address: peerNode.Address,
 				Type:    peerNode.Type,
 				mining:  peerNode.Mining,

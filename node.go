@@ -28,7 +28,7 @@ func (peerNode Node) isOld() bool {
 	if err != nil {
 		peers = GetSeedPeers()
 	}
-	for _, peer := range peers.peerList {
+	for _, peer := range peers.PeerList {
 		if peer.Address == peerNode.Address && peer.mining == peerNode.Mining && peer.Type == peerNode.Type {
 			return true
 		}
