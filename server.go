@@ -16,7 +16,7 @@ const listenPort = 8099
 
 //commandLength 表示命令名长度。
 // 节点之间交互的消息，在底层就是字节序列。前 12 个字节指定了命令名（比如 version），后面的字节会包含 gob 编码的消息结构
-const commandLength = 12
+const commandLength = 20
 
 var blocksInTransit = [][]byte{}           //保存已下载的块
 var mempool = make(map[string]Transaction) //交易内存池
