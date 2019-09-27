@@ -360,6 +360,13 @@ func handleBlock(request []byte, bc *Blockchain) {
 
 	blockBytes := blockData.Block
 	block := DeserializeBlock(blockBytes)
+	//验证区块有效性
+	//判断区块是否已经存在
+	_, err = bc.GetBlock(block.Hash)
+	if err == nil {
+		fmt.Println("区块已经存在！")
+		return
+	}
 
 	fmt.Println("Recevied a new block!")
 	bc.AddBlock(block)
