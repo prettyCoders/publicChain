@@ -315,7 +315,7 @@ func handleGetData(request []byte, bc *Blockchain) {
 		log.Panic(err)
 	}
 
-	if data.Type == "higherBlockHashes" {
+	if data.Type == "block" {
 		block, err := bc.GetBlock([]byte(data.Hash))
 		if err != nil {
 			return
