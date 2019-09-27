@@ -24,9 +24,9 @@ type Peers struct {
 }
 
 //加载本地的对等节点列表
-func (p *Peers) LoadFromFile() error {
+func LoadPeersFromFile() (*Peers, error) {
 	if _, err := os.Stat(PeerFile); os.IsNotExist(err) {
-		return err
+		return nil, err
 	}
 
 	fileContent, err := ioutil.ReadFile(PeerFile)
@@ -42,9 +42,7 @@ func (p *Peers) LoadFromFile() error {
 		log.Panic(err)
 	}
 
-	p.peerList = peers.peerList
-
-	return nil
+	return &peers, err
 }
 
 //保存最新的对等节点列表

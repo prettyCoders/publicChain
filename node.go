@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 /**
 节点
 节点暂时分为全节点，轻节点
@@ -17,6 +19,21 @@ type Node struct {
 	Type            string //类型
 	Mining          bool   //是否开启挖矿
 	BestBlockHeight int    //最新区块高度
+	Address         string //节点地址（ip:port）
+}
+
+//验证peer的node信息是否已经保存
+func (peerNode Node) isOld() bool {
+	peers, err := LoadPeersFromFile()
+	if err != nil {
+		peers = GetSeedPeers()
+	}
+	for _, peer := range peers.peerList {
+		if peer.Address == peerNode.Address && peer.mining == peerNode.Mining && peer.Type == peerNode.Type {
+			return true
+		}
+	}
+	return false
 }
 
 //创建新的Node对象
@@ -26,5 +43,6 @@ func NewNode(nodeType string, mining bool, blockchain *Blockchain) *Node {
 		Type:            nodeType,
 		Mining:          mining,
 		BestBlockHeight: blockchain.GetBestHeight(),
+		Address:         fmt.Sprintf("%s:%d", GetInternalIp(), listenPort),
 	}
 }

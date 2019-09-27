@@ -53,7 +53,7 @@ func (ws Wallets) GetWallet(address string) Wallet {
 	return *ws.WalletMap[address]
 }
 
-// LoadFromFile loads wallets from the file
+// LoadPeersFromFile loads wallets from the file
 func (ws *Wallets) LoadFromFile() error {
 	if _, err := os.Stat(walletFile); os.IsNotExist(err) {
 		return err

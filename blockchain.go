@@ -245,16 +245,17 @@ func (bc *Blockchain) GetBlock(blockHash []byte) (Block, error) {
 	return block, nil
 }
 
-// 返回当前区块链所有区块的Hash
-func (bc *Blockchain) GetBlockHashes() [][]byte {
+// 返回从指定高度到本区块链最新高度的所有区块的Hash列表
+func (bc *Blockchain) GetBlockHashes(fromHeight int) [][]byte {
 	var blocks [][]byte
 	bci := bc.Iterator()
 
 	for {
 		block := bci.Next()
-
+		if block.Height == fromHeight {
+			break
+		}
 		blocks = append(blocks, block.Hash)
-
 		if len(block.PrevBlockHash) == 0 {
 			break
 		}
