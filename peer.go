@@ -20,7 +20,7 @@ type Peer struct {
 
 //对等节点列表
 type Peers struct {
-	peerList []Peer
+	PeerList []Peer
 }
 
 //加载本地的对等节点列表
@@ -84,5 +84,5 @@ func GetSeedPeers() *Peers {
 		Type:    "full",
 		mining:  false,
 	}
-	return &Peers{peerList: seedPeers[:]}
+	return &Peers{PeerList: seedPeers[:]}
 }
