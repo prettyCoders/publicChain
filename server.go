@@ -267,7 +267,7 @@ func handleInv(request []byte, blockchain *Blockchain) {
 	//如果收到块哈希，我们想要将它们保存在 blocksInTransit 变量来跟踪已下载的块。这能够让我们从不同的节点下载块。
 	// 在将块置于传送状态时，我们给 Inv 消息的发送者发送 getdata 命令并更新 blocksInTransit。
 	// 在一个真实的 P2P 网络中，我们会想要从不同节点来传送块。
-	if payload.Type == "block" {
+	if payload.Type == "higherBlockHashes" {
 		//保存已下载的块
 		blocksInTransit = payload.Items
 
@@ -315,7 +315,7 @@ func handleGetData(request []byte, bc *Blockchain) {
 		log.Panic(err)
 	}
 
-	if data.Type == "block" {
+	if data.Type == "higherBlockHashes" {
 		block, err := bc.GetBlock([]byte(data.Hash))
 		if err != nil {
 			return
