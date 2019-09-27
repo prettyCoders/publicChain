@@ -115,14 +115,6 @@ func initNode(mining bool, bc *Blockchain) {
 	node = NewNode("full", mining, bc)
 }
 
-//发送当前节点信息
-//peerAddress 目标节点地址
-func sendNodeMessage(peerAddress string, bc *Blockchain) error {
-	payload := gobEncode(node)
-	request := append(commandToBytes("node"), payload...)
-	return sendData(peerAddress, request)
-}
-
 //发送数据
 func sendData(addr string, data []byte) error {
 	conn, err := net.Dial(protocol, addr)
@@ -171,6 +163,14 @@ func bytesToCommand(bytes []byte) string {
 	return fmt.Sprintf("%s", command)
 }
 
+//发送当前节点信息
+//peerAddress 目标节点地址
+func sendNodeMessage(peerAddress string, bc *Blockchain) error {
+	payload := gobEncode(node)
+	request := append(commandToBytes("node"), payload...)
+	return sendData(peerAddress, request)
+}
+
 /**
 处理其他节点发送过来的节点信息
 1、验证peer版本是否匹配，如果不匹配，直接忽略这次请求
@@ -206,15 +206,13 @@ func handleNodeMessage(request []byte, bc *Blockchain) {
 			})
 			peers.SaveToFile()
 		}
-		//如果peer高度低于本节点，则发送它缺少的区块的Hash列表给他
-		//if myBestHeight > foreignerBestHeight {
-		//	showHigherBlockHashes(peerNode, bc)
-		//	//如果peer高度高于本节点，则请求查看本节点缺少的区块的Hash列表
-		//} else if myBestHeight < foreignerBestHeight {
-		//
-		//}
 
-		if myBestHeight < foreignerBestHeight {
+		//如果peer高度低于本节点，则发送它缺少的区块的Hash列表给他
+		if myBestHeight > foreignerBestHeight {
+			blockHashes := bc.GetBlockHashes(peerNode.BestBlockHeight)
+			sendInv(peerNode.Address, "higherBlockHashes", blockHashes)
+			//如果peer高度高于本节点，则请求查看本节点缺少的区块的Hash列表
+		} else if myBestHeight < foreignerBestHeight {
 			getHigherBlockHashes(peerNode)
 		}
 	}
