@@ -25,7 +25,6 @@ var blocksInTransit = [][]byte{}           //保存已下载的块
 var mempool = make(map[string]Transaction) //交易内存池
 var Mining bool                            //节点是否开启挖矿
 var node *Node                             //当前节点
-var peers *Peers
 
 //比特币使用 Inv 来向其他节点展示当前节点有什么块和交易。
 // 再次提醒，它没有包含完整的区块链和交易，仅仅是哈希而已。Type 字段表明了这是块还是交易
@@ -68,7 +67,7 @@ func StartServer() {
 
 	//加载本地保存的peer
 	var err error
-	peers, err = LoadPeersFromFile()
+	peers, err := LoadPeersFromFile()
 	//开启服务
 
 	ln, err := net.Listen(protocol, fmt.Sprintf("0.0.0.0:%d", listenPort))
@@ -197,6 +196,7 @@ func handleNodeMessage(request []byte, bc *Blockchain) {
 		myBestHeight := bc.GetBestHeight()
 		foreignerBestHeight := peerNode.BestBlockHeight
 		fmt.Printf("收到节点的NodeMessage请求，当前节点BestBlockHeight:%d，对方BestBlockHeight:%d\n", myBestHeight, foreignerBestHeight)
+		peers, _ := LoadPeersFromFile()
 		//新peer
 		if !peerNode.isOld() {
 			peers.PeerList = append(peers.PeerList, Peer{
