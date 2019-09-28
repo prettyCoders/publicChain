@@ -20,7 +20,7 @@ func (cli *CLI) printUsage() {
 	fmt.Println("  printchain - Print all the blocks of the blockchain")
 	fmt.Println("  reindexutxo - Rebuilds the UTXO set")
 	fmt.Println("  send -from FROM -to TO -amount AMOUNT -mine - Send AMOUNT of coins from FROM Address to TO. Mine on the same node, when -mine is set.")
-	fmt.Println("  startnode -mine - Start a node  -mine enables mining")
+	fmt.Println("  startnode -mine - Start a node  -mine enables Mining")
 }
 
 func (cli *CLI) validateArgs() {
@@ -49,7 +49,7 @@ func (cli *CLI) Run() {
 	sendTo := sendCmd.String("to", "", "Destination wallet Address")
 	sendAmount := sendCmd.Int("amount", 0, "Amount to send")
 	sendMine := sendCmd.Bool("mine", false, "Mine immediately on the same node")
-	startNodeMine := startNodeCmd.Bool("mine", false, "Enable mining mode")
+	startNodeMine := startNodeCmd.Bool("mine", false, "Enable Mining mode")
 
 	switch os.Args[1] {
 	case "getbalance":

@@ -26,7 +26,7 @@ type Node struct {
 func (peerNode Node) isOld() bool {
 	peers, _ := LoadPeersFromFile()
 	for _, peer := range peers.PeerList {
-		if peer.Address == peerNode.Address && peer.mining == peerNode.Mining && peer.Type == peerNode.Type {
+		if peer.Address == peerNode.Address && peer.Mining == peerNode.Mining && peer.Type == peerNode.Type {
 			return true
 		}
 	}

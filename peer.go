@@ -16,7 +16,7 @@ const PeerFile = "peer"
 type Peer struct {
 	Address string //对等节点的地址（23.65.88.11:3000）
 	Type    string //对等节点的类型
-	mining  bool   //对等节点是否开启挖矿
+	Mining  bool   //对等节点是否开启挖矿
 }
 
 //对等节点列表
@@ -71,22 +71,22 @@ func getSeedPeers() *Peers {
 	seedPeers[0] = Peer{
 		Address: "172.31.36.40:8099",
 		Type:    "full",
-		mining:  true,
+		Mining:  true,
 	}
 	seedPeers[1] = Peer{
 		Address: "172.31.36.29:8099",
 		Type:    "full",
-		mining:  true,
+		Mining:  true,
 	}
 	seedPeers[2] = Peer{
 		Address: "172.31.36.31:8099",
 		Type:    "full",
-		mining:  false,
+		Mining:  false,
 	}
 	seedPeers[3] = Peer{
 		Address: "172.31.36.30:8099",
 		Type:    "full",
-		mining:  false,
+		Mining:  false,
 	}
 	return &Peers{PeerList: seedPeers[:]}
 }

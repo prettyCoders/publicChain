@@ -202,10 +202,10 @@ func handleNodeMessage(request []byte, bc *Blockchain) {
 			peers.PeerList = append(peers.PeerList, Peer{
 				Address: peerNode.Address,
 				Type:    peerNode.Type,
-				mining:  peerNode.Mining,
+				Mining:  peerNode.Mining,
 			})
 			for _, peer := range peers.PeerList {
-				fmt.Printf(peer.Address, peer.mining, peer.Type, "\n")
+				fmt.Printf(peer.Address, peer.Mining, peer.Type, "\n")
 			}
 			peers.SaveToFile()
 		}
