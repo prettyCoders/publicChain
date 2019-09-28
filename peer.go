@@ -26,7 +26,9 @@ type Peers struct {
 //加载本地的对等节点列表
 func LoadPeersFromFile() (*Peers, error) {
 	if _, err := os.Stat(PeerFile); os.IsNotExist(err) {
-		return nil, err
+		peers := getSeedPeers()
+		peers.SaveToFile()
+		return peers, nil
 	}
 
 	fileContent, err := ioutil.ReadFile(PeerFile)
@@ -62,7 +64,7 @@ func (p Peers) SaveToFile() {
 	}
 }
 
-func GetSeedPeers() *Peers {
+func getSeedPeers() *Peers {
 	var seedPeers [4]Peer
 	seedPeers[0] = Peer{
 		Address: "172.31.36.40:8099",

@@ -312,7 +312,7 @@ func (bc *Blockchain) MineBlock(transactions []*Transaction) *Block {
 	if err != nil {
 		log.Panic(err)
 	}
-
+	fmt.Println("挖矿成功，最新区块高度为：", newBlock.Height)
 	return newBlock
 }
 

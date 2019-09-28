@@ -24,10 +24,7 @@ type Node struct {
 
 //验证peer的node信息是否已经保存
 func (peerNode Node) isOld() bool {
-	peers, err := LoadPeersFromFile()
-	if err != nil {
-		peers = GetSeedPeers()
-	}
+	peers, _ := LoadPeersFromFile()
 	for _, peer := range peers.PeerList {
 		if peer.Address == peerNode.Address && peer.mining == peerNode.Mining && peer.Type == peerNode.Type {
 			return true
