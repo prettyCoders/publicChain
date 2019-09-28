@@ -26,9 +26,13 @@ type Node struct {
 func (peerNode Node) isOld() bool {
 	peers, _ := LoadPeersFromFile()
 	for _, peer := range peers.PeerList {
+		fmt.Println("peerNode:", peerNode.Address, peerNode.Mining, peerNode.Type)
+		fmt.Println("myNode:", peer.Address, peer.Mining, peer.Type)
 		if peer.Address == peerNode.Address && peer.Mining == peerNode.Mining && peer.Type == peerNode.Type {
+			fmt.Println("一致")
 			return true
 		}
+		fmt.Println("不一致")
 	}
 	return false
 }
