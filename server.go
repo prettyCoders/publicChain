@@ -16,16 +16,15 @@ const protocol = "tcp"
 const listenPort = 8099
 
 //commandLength 表示命令名长度。
-// 节点之间交互的消息，在底层就是字节序列。前 12 个字节指定了命令名（比如 version），后面的字节会包含 gob 编码的消息结构
+// 节点之间交互的消息，在底层就是字节序列。前 20 个字节指定了命令名（比如 version），后面的字节会包含 gob 编码的消息结构
 const commandLength = 20
 
 var lock sync.Mutex //互斥锁
 
 var blocksInTransit = [][]byte{}           //保存已下载的块
 var mempool = make(map[string]Transaction) //交易内存池
-
-var node *Node           //当前节点
-var miningAddress string //接收挖矿奖励的地址
+var Mining bool                            //节点是否开启挖矿
+var node *Node                             //当前节点
 var peers *Peers
 
 //比特币使用 Inv 来向其他节点展示当前节点有什么块和交易。
@@ -58,25 +57,18 @@ type TxData struct {
 //1、初始化节点信息
 //2、加载本地保存的peer
 //3、然后发送版本信息
-func StartServer(minerAddress string) {
-	//初始化节点信息
-	mining := false
-	if len(minerAddress) > 0 {
-		miningAddress = minerAddress
-		mining = true
-	}
+func StartServer() {
 	bc := NewBlockchain()
-	initNode(mining, bc)
+	//初始化节点信息
+	initNode(Mining, bc)
+
+	if Mining {
+		go mining(bc)
+	}
 
 	//加载本地保存的peer
 	var err error
 	peers, err = LoadPeersFromFile()
-	if err != nil {
-		peers = GetSeedPeers()
-		//保存到本地
-		peers.SaveToFile()
-	}
-
 	//开启服务
 
 	ln, err := net.Listen(protocol, fmt.Sprintf("0.0.0.0:%d", listenPort))
@@ -115,6 +107,11 @@ func StartServer(minerAddress string) {
 
 //初始化节点
 func initNode(mining bool, bc *Blockchain) {
+	node = NewNode("full", mining, bc)
+}
+
+//更新节点信息
+func UpdateNode(mining bool, bc *Blockchain) {
 	node = NewNode("full", mining, bc)
 }
 
@@ -508,4 +505,36 @@ func handleConnection(conn net.Conn, bc *Blockchain) {
 	}
 
 	conn.Close()
+}
+
+func mining(bc *Blockchain) {
+	fmt.Println("开始挖矿")
+	for Mining {
+		//如果节点开启挖矿，则在挖矿的同时，不停的取交易池的数据打包进区块
+		//挖矿成功后广播给peer
+		wallets, err := NewWallets()
+		if err != nil {
+			log.Panic(err)
+		}
+
+		UTXOSet := UTXOSet{bc}
+		cbTx := NewCoinbaseTX(wallets.CreateWallet(), "")
+		txs := []*Transaction{}
+		txs = append(txs, cbTx)
+		for hash, transaction := range mempool {
+			txs = append(txs, &transaction)
+			delete(mempool, hash)
+		}
+		newBlock := bc.MineBlock(txs)
+		UTXOSet.Update(newBlock)
+		go shareMyBooty(bc)
+	}
+}
+
+//挖矿成功，通知其他节点来同步数据
+func shareMyBooty(bc *Blockchain) {
+	peers, _ := LoadPeersFromFile()
+	for _, peer := range peers.PeerList {
+		sendNodeMessage(peer.Address, bc)
+	}
 }
