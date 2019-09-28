@@ -542,6 +542,7 @@ func shareMyBooty(bc *Blockchain) {
 		if peerAddress == fmt.Sprintf("%s:%d", GetInternalIp(), listenPort) {
 			continue
 		}
+		UpdateNode(Mining, bc)
 		sendNodeMessage(peer.Address, bc)
 	}
 }
