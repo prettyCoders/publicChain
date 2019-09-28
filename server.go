@@ -198,16 +198,12 @@ func handleNodeMessage(request []byte, bc *Blockchain) {
 		fmt.Printf("收到节点的NodeMessage请求，当前节点BestBlockHeight:%d，对方BestBlockHeight:%d\n", myBestHeight, foreignerBestHeight)
 		peers, _ := LoadPeersFromFile()
 		//新peer
-		fmt.Println("=============")
 		if !peerNode.isOld() {
 			peers.PeerList = append(peers.PeerList, Peer{
 				Address: peerNode.Address,
 				Type:    peerNode.Type,
 				Mining:  peerNode.Mining,
 			})
-			//for _, peer := range peers.PeerList {
-			//	fmt.Printf(peer.Address, peer.Mining, peer.Type, "\n")
-			//}
 			peers.SaveToFile()
 		}
 
@@ -376,6 +372,8 @@ func handleBlock(request []byte, bc *Blockchain) {
 
 	fmt.Println("Recevied a new block!")
 	bc.AddBlock(block)
+	//重新加载区块链
+	bc = NewBlockchain()
 
 	fmt.Printf("Added block %x\n", block.Hash)
 
