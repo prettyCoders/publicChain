@@ -31,7 +31,7 @@ var (
 在比特币中，当一个块被挖出来以后，“target bits” 代表了区块头里存储的难度，也就是开头有多少个 0。
 这里的 24 指的是算出来的哈希前 24 位必须是 0，如果用 16 进制表示，就是前 6 位必须是 0，这一点从最后的输出可以看出来
 */
-const targetBits = 16
+const targetBits = 20
 
 type ProofOfWork struct {
 	block  *Block   //区块

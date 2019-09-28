@@ -345,8 +345,6 @@ func sendBlock(addr string, b *Block) {
 //当接收到一个新块时，我们把它放到区块链里面。如果还有更多的区块需要下载，我们继续从上一个下载的块的那个节点继续请求。
 // 当最后把所有块都下载完后，对 UTXO 集进行重新索引。
 //TODO：并非无条件信任，我们应该在将每个块加入到区块链之前对它们进行验证。
-//TODO: 并非运行 UTXOSet.Reindex()， 而是应该使用 UTXOSet.Update(block)，因为如果区块链很大，
-// 它将需要很多时间来对整个 UTXO 集重新索引
 func handleBlock(request []byte, bc *Blockchain) {
 	lock.Lock()
 	defer lock.Unlock()
@@ -383,7 +381,7 @@ func handleBlock(request []byte, bc *Blockchain) {
 		blocksInTransit = blocksInTransit[1:]
 	} else {
 		UTXOSet := UTXOSet{bc}
-		UTXOSet.Reindex()
+		UTXOSet.Update(block)
 	}
 }
 
