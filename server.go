@@ -535,6 +535,11 @@ func mining(bc *Blockchain) {
 func shareMyBooty(bc *Blockchain) {
 	peers, _ := LoadPeersFromFile()
 	for _, peer := range peers.PeerList {
+		peerAddress := peer.Address
+		//自己的外网IP
+		if peerAddress == fmt.Sprintf("%s:%d", GetInternalIp(), listenPort) {
+			continue
+		}
 		sendNodeMessage(peer.Address, bc)
 	}
 }
