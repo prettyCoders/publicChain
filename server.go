@@ -198,6 +198,7 @@ func handleNodeMessage(request []byte, bc *Blockchain) {
 		fmt.Printf("收到节点的NodeMessage请求，当前节点BestBlockHeight:%d，对方BestBlockHeight:%d\n", myBestHeight, foreignerBestHeight)
 		peers, _ := LoadPeersFromFile()
 		//新peer
+		fmt.Println("=============")
 		if !peerNode.isOld() {
 			peers.PeerList = append(peers.PeerList, Peer{
 				Address: peerNode.Address,

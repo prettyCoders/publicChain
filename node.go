@@ -24,9 +24,11 @@ type Node struct {
 
 //验证peer的node信息是否已经保存
 func (peerNode Node) isOld() bool {
-	peers, _ := LoadPeersFromFile()
 	fmt.Println("开始比对")
+	peers, _ := LoadPeersFromFile()
+	fmt.Println(len(peers.PeerList))
 	for _, peer := range peers.PeerList {
+		fmt.Println("开始比对2")
 		fmt.Println("peerNode:", peerNode.Address, peerNode.Mining, peerNode.Type)
 		fmt.Println("myNode:", peer.Address, peer.Mining, peer.Type)
 		if peer.Address == peerNode.Address && peer.Mining == peerNode.Mining && peer.Type == peerNode.Type {
