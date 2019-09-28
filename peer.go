@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"crypto/elliptic"
 	"encoding/gob"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -43,6 +44,7 @@ func LoadPeersFromFile() (*Peers, error) {
 	if err != nil {
 		log.Panic(err)
 	}
+	fmt.Println("当前peer数:", len(peers.PeerList))
 
 	return &peers, err
 }

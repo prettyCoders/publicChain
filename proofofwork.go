@@ -77,13 +77,12 @@ func (pow *ProofOfWork) Run() (int, []byte) {
 	var hash [32]byte
 	nonce := 0 //计数器初始值为0
 
-	fmt.Printf("Mining a new block")
+	fmt.Printf("Mining a new block\n")
 	for nonce < maxNonce {
 		data := pow.prepareData(nonce) //准备数据
 
 		hash = sha256.Sum256(data) //用 SHA-256 对数据进行哈希
-		fmt.Printf("\r%x", hash)
-		hashInt.SetBytes(hash[:]) //将哈希转换成一个大整数
+		hashInt.SetBytes(hash[:])  //将哈希转换成一个大整数
 
 		if hashInt.Cmp(pow.target) == -1 { //将这个大整数与目标进行比较
 			break
@@ -91,8 +90,7 @@ func (pow *ProofOfWork) Run() (int, []byte) {
 			nonce++
 		}
 	}
-	fmt.Print("\n\n")
-
+	fmt.Printf("%x\n", hash)
 	return nonce, hash[:]
 }
 
